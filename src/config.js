@@ -1,6 +1,6 @@
 const config = 
 {
-    "url":"http://localhost:2004"
+    "url":"https://sdpbackend-famf.onrender.com"
 }
 
 export default config
