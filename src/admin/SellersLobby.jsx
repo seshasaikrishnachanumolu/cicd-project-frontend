@@ -70,7 +70,7 @@ export default function SellersLobby() {
           }
         });
       } else {
-        const response = await axios.put(`${config.url}/seller/approve/${sid}`);
+        const response = await axios.post(`${config.url}/approveseller`, sid);
         alert(response.data);
         fetchSellers();
       }
