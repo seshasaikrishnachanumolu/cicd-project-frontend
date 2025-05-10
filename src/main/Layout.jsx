@@ -105,6 +105,9 @@ export default function Layout() {
                     <Link to="/sellerlogin" className="block px-5 py-3 hover:bg-blue-50 text-gray-700" onClick={() => setLoginDropdownOpen(false)}>
                       <FaStore className="inline mr-3 text-blue-500" /> Seller Login
                     </Link>
+                    <Link to="/adminlogin" className="block px-5 py-3 hover:bg-blue-50 text-gray-700" onClick={() => setLoginDropdownOpen(false)}>
+                      <FaUser className="inline mr-3 text-blue-500" /> Admin Login
+                    </Link>
                   </div>
                 )}
               </div>
