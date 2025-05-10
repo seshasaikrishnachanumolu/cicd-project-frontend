@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import NotFoundImage from './notfound.png';
+import notfound from './notfound.png';
 
 export default function NotFound() {
   return (
@@ -11,7 +11,7 @@ export default function NotFound() {
         </p>
         <div className="mb-8">
           <img 
-            src={NotFoundImage} 
+            src={notfound} 
             alt="Page Not Found" 
             className="max-w-full h-auto mx-auto rounded-lg shadow-md"
           />

@@ -37,7 +37,8 @@ export default function SellerLogin() {
 
       if (response.status === 200) {
         setIsSellerLoggedIn(true);
-        sessionStorage.setItem("isSellerLoggedIn", "true");
+        sessionStorage.setItem("isSellerLoggedIn", true);
+        sessionStorage.setItem("seller", JSON.stringify(response.data));
         toast.success("Login Success 🎉");
         setTimeout(() => {
           navigate("/");
@@ -139,14 +140,14 @@ export default function SellerLogin() {
           <p className="text-gray-700">
             Don't have an account?
             <Link
-              to="/seller-register"
+              to="/sellerregistration"
               className="text-blue-500 hover:underline ml-1"
             >
               Create Account
             </Link>
           </p>
           <Link
-            to="/seller-forgot-password"
+            to="/sforgotpassword"
             className="text-blue-500 hover:underline block mt-2"
           >
             Forgot your password?

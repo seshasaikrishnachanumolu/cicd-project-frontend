@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import config from "../config";
 import { useAuth } from "../contextapi/AuthContext";
-import { toast } from "react-toastify"; // No ToastContainer here
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function BuyerLogin() {
@@ -29,6 +29,7 @@ export default function BuyerLogin() {
     e.preventDefault();
     setMessage("");
     setError("");
+
     try {
       const response = await axios.post(
         `${config.url}/buyer/checkbuyerlogin`,
@@ -37,10 +38,9 @@ export default function BuyerLogin() {
 
       if (response.status === 200) {
         setIsBuyerLoggedIn(true);
-        sessionStorage.setItem("isBuyerLoggedIn", "true");
+        sessionStorage.setItem("isBuyerLoggedIn", true);
+        sessionStorage.setItem("buyer", JSON.stringify(response.data));
         toast.success("Login Success 🎉");
-        const username = sessionStorage.getItem("buyer_name");
-        console.log(username); // This will give you the logged-in user's username.
 
         setTimeout(() => {
           navigate("/");
@@ -84,6 +84,7 @@ export default function BuyerLogin() {
         <h2 className="text-xl sm:text-2xl text-center font-semibold text-gray-800 mb-4">
           Sign In to Your Account
         </h2>
+
         {message && (
           <p className="text-center text-green-600 font-bold">{message}</p>
         )}
@@ -148,9 +149,12 @@ export default function BuyerLogin() {
               Create Account
             </Link>
           </p>
-          <a href="#" className="text-blue-500 hover:underline block mt-2">
+          <Link
+            to="/forgotpassword"
+            className="text-blue-500 hover:underline block mt-2"
+          >
             Forgot your password?
-          </a>
+          </Link>
         </div>
       </div>
     </div>

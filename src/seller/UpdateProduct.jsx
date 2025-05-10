@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import config from '../config';
 
-const AddProduct = () => {
+const UpdateProduct = () => {
+  const { productId } = useParams();
+  const navigate = useNavigate();
+  
   const [product, setProduct] = useState({
+    id: '',
     category: '',
     name: '',
     description: '',
     cost: ''
   });
+  
   const [productImage, setProductImage] = useState(null);
   const [seller, setSeller] = useState(null);
   const [message, setMessage] = useState('');
@@ -17,19 +23,48 @@ const AddProduct = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
   const [formVisible, setFormVisible] = useState(false);
+  const [imageChanged, setImageChanged] = useState(false);
 
   useEffect(() => {
-    // Simulate initial page loading
-    const fetchSellerData = async () => {
+    const fetchData = async () => {
       setPageLoading(true);
       
       try {
+        // Get seller info from session storage
         const storedSeller = sessionStorage.getItem('seller');
         if (storedSeller) {
           setSeller(JSON.parse(storedSeller));
+        } else {
+          setError("Seller not logged in");
+          setTimeout(() => {
+            navigate('/sellerlogin');
+          }, 2000);
+          return;
         }
         
-        // Simulate network delay for a more noticeable loading effect
+        // Fetch product details
+        if (productId) {
+          const response = await axios.get(`${config.url}/product/getproduct/${productId}`);
+          if (response.data) {
+            const fetchedProduct = response.data;
+            
+            // Set product data
+            setProduct({
+              id: fetchedProduct.id,
+              category: fetchedProduct.category || '',
+              name: fetchedProduct.name || '',
+              description: fetchedProduct.description || '',
+              cost: fetchedProduct.cost || ''
+            });
+            
+            // Set preview URL for existing image
+            setPreviewUrl(`${config.url}/product/displayproductimage?id=${productId}`);
+          }
+        } else {
+          setError("Product ID is missing");
+        }
+        
+        // Simulate loading for better UX
         setTimeout(() => {
           setPageLoading(false);
           
@@ -37,16 +72,17 @@ const AddProduct = () => {
           setTimeout(() => {
             setFormVisible(true);
           }, 300);
-        }, 2000);
+        }, 1500);
         
       } catch (err) {
-        console.error("Error fetching seller data:", err);
+        console.log("Error fetching product data:", err);
+        setError(err.response?.data || "An error occurred while fetching product data");
         setPageLoading(false);
       }
     };
     
-    fetchSellerData();
-  }, []);
+    fetchData();
+  }, [productId, navigate]);
 
   const handleChange = (e) => {
     setProduct({ ...product, [e.target.name]: e.target.value });
@@ -54,14 +90,13 @@ const AddProduct = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    setProductImage(file);
-    
-    // Create preview URL
     if (file) {
+      setProductImage(file);
+      setImageChanged(true);
+      
+      // Create preview URL
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
-    } else {
-      setPreviewUrl(null);
     }
   };
 
@@ -75,37 +110,48 @@ const AddProduct = () => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append('productimage', productImage);
-    formData.append('category', product.category);
-    formData.append('name', product.name);
-    formData.append('description', product.description);
-    formData.append('cost', product.cost);
-    formData.append('sid', seller.id);
-
     try {
-      const response = await axios.post(`${config.url}/product/addproduct`, formData, {
+      let response;
+      
+      // Create form data for the request
+      const formData = new FormData();
+      formData.append('id', product.id); // Add this line to include product ID in form data
+      formData.append('category', product.category);
+      formData.append('name', product.name);
+      formData.append('description', product.description);
+      formData.append('cost', product.cost);
+      formData.append('sid', seller.id);
+      
+      // Only append image if it's changed
+      if (imageChanged && productImage) {
+        formData.append('productimage', productImage);
+      }
+
+      // Send update request to the API
+      response = await axios.put(`${config.url}/product/updateproduct`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
 
-      setMessage(response.data);
+      setMessage(response.data || "Product updated successfully!");
       setError('');
-
-      // Reset form
-      setProduct({
-        category: '',
-        name: '',
-        description: '',
-        cost: ''
-      });
-      setProductImage(null);
-      setPreviewUrl(null);
+      
+      // Redirect to product list after successful update
+      setTimeout(() => {
+        navigate('/products');
+      }, 2000);
+      
     } catch (error) {
-      console.error(error.message);
-      setMessage('');
-      setError(error.response?.data || "An unexpected error occurred.");
+      console.error("Update error:", error);
+      const errorMessage = error.response?.data;
+      if (typeof errorMessage === 'object') {
+        // Handle object error response
+        setError(errorMessage.message || JSON.stringify(errorMessage));
+      } else {
+        // Handle string error response
+        setError(errorMessage || "An unexpected error occurred while updating the product.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -115,7 +161,7 @@ const AddProduct = () => {
     <div className="max-w-4xl mx-auto px-4 py-8 animate-fadeIn">
       <h3 className="text-3xl font-bold text-center mb-8 relative overflow-hidden">
         <span className="relative z-10 inline-block logo-text after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-1 after:bg-gradient-to-r after:from-blue-500 after:to-blue-700 after:transform after:transition-all after:duration-300 hover:after:h-2">
-          Add Product
+          Update Product
         </span>
       </h3>
       
@@ -186,7 +232,7 @@ const AddProduct = () => {
         >
           <div className="bg-gradient-to-r from-blue-500 to-blue-700 px-6 py-4">
             <h4 className="text-xl font-semibold text-white">Product Details</h4>
-            <p className="text-blue-100 text-sm">Fill in the information below to add a new product</p>
+            <p className="text-blue-100 text-sm">Update your product information below</p>
           </div>
           
           <form onSubmit={handleSubmit} encType="multipart/form-data" className="p-6">
@@ -302,7 +348,7 @@ const AddProduct = () => {
                 style={{ animationDelay: '500ms', animation: formVisible ? 'fadeInUp 0.6s ease-out forwards' : 'none' }}
               >
                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="productImage">
-                  Product Image
+                  Product Image {!imageChanged && <span className="text-xs text-blue-600">(Current image will be kept unless changed)</span>}
                 </label>
                 <div className="flex justify-center items-center w-full">
                   <label className="flex flex-col w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all duration-300">
@@ -311,7 +357,7 @@ const AddProduct = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                       </svg>
                       <p className="mb-2 text-sm text-gray-500">
-                        <span className="font-semibold">Click to upload</span> or drag and drop
+                        <span className="font-semibold">Click to {imageChanged ? 'change' : 'upload'}</span> or drag and drop
                       </p>
                       <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
                     </div>
@@ -319,8 +365,7 @@ const AddProduct = () => {
                       id="productImage" 
                       type="file" 
                       className="hidden" 
-                      onChange={handleImageChange} 
-                      required 
+                      onChange={handleImageChange}
                     />
                   </label>
                 </div>
@@ -334,22 +379,37 @@ const AddProduct = () => {
               >
                 <p className="block text-gray-700 text-sm font-bold mb-2">Image Preview:</p>
                 <div className="border-2 border-blue-200 rounded-lg p-2 w-full flex justify-center bg-gray-50">
-                  <img src={previewUrl} alt="Product Preview" className="max-h-64 object-contain" />
+                  <img 
+                    src={previewUrl} 
+                    alt="Product Preview" 
+                    className="max-h-64 object-contain" 
+                    onError={(e) => {
+                      e.target.src = "https://via.placeholder.com/300x200?text=Image+Not+Available";
+                    }}
+                  />
                 </div>
               </div>
             )}
 
             <div 
-              className="flex items-center justify-center mt-8"
+              className="flex items-center justify-between mt-8"
               style={{ animationDelay: '700ms', animation: formVisible ? 'fadeInUp 0.6s ease-out forwards' : 'none' }}
             >
+              <button 
+                type="button"
+                onClick={() => navigate('/sellerproducts')}
+                className="px-6 py-2 bg-gray-300 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              
               <button 
                 className={`relative overflow-hidden px-8 py-3 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-medium rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`} 
                 type="submit"
                 disabled={isLoading}
               >
                 <span className="relative z-10">
-                  {isLoading ? 'Processing...' : 'Add Product'}
+                  {isLoading ? 'Updating...' : 'Update Product'}
                 </span>
                 <span className="absolute top-0 left-0 w-full h-full bg-white opacity-0 hover:opacity-20 transition-opacity"></span>
               </button>
@@ -409,34 +469,9 @@ const AddProduct = () => {
           background-size: 1000px 100%;
           animation: shimmer 2s infinite linear;
         }
-        
-        select {
-          text-indent: 5px;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-        
-        select:focus {
-          border-color: #3b82f6;
-          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
-        }
-        
-        select option {
-          padding: 10px;
-          background-color: white;
-          color: #1f2937;
-        }
-        
-        select option:hover, select option:focus {
-          background-color: #eff6ff;
-        }
-        
-        select option:checked {
-          background-color: #dbeafe;
-          font-weight: 500;
-        }
       `}</style>
     </div>
   );
 };
 
-export default AddProduct;
+export default UpdateProduct;
