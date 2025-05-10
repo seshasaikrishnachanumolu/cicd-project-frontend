@@ -64,7 +64,7 @@ export default function SellersLobby() {
           backgroundColor: "rgba(209, 250, 229, 0.4)", // Light green highlight
           duration: 0.3,
           onComplete: async () => {
-            const response = await axios.put(`${config.url}/seller/approve/${sid}`);
+            const response = await axios.post(`${config.url}/approveseller`, sid);;
             alert(response.data);
             fetchSellers();
           }
