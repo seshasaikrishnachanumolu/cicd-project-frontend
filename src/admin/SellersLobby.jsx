@@ -55,29 +55,53 @@ export default function SellersLobby() {
     }
   };
 
+  // const approveSeller = async (sid) => {
+  //   try {
+  //     // Animate the row before action
+  //     const row = document.querySelector(`tr[data-id="${sid}"]`);
+  //     if (row) {
+  //       gsap.to(row, {
+  //         backgroundColor: "rgba(209, 250, 229, 0.4)", // Light green highlight
+  //         duration: 0.3,
+  //         onComplete: async () => {
+  //           const response = await axios.post(`${config.url}/admin/approveseller`, sid);;
+  //           alert(response.data);
+  //           fetchSellers();
+  //         }
+  //       });
+  //     } else {
+  //       const response = await axios.post(`${config.url}/admin/approveseller`, sid);
+  //       alert(response.data);
+  //       fetchSellers();
+  //     }
+  //   } catch (err) {
+  //     setError("Approval failed... " + err.message);
+  //   }
+  // };
   const approveSeller = async (sid) => {
-    try {
-      // Animate the row before action
-      const row = document.querySelector(`tr[data-id="${sid}"]`);
-      if (row) {
-        gsap.to(row, {
-          backgroundColor: "rgba(209, 250, 229, 0.4)", // Light green highlight
-          duration: 0.3,
-          onComplete: async () => {
-            const response = await axios.post(`${config.url}/approveseller`, sid);;
-            alert(response.data);
-            fetchSellers();
-          }
-        });
-      } else {
-        const response = await axios.post(`${config.url}/approveseller`, sid);
-        alert(response.data);
-        fetchSellers();
-      }
-    } catch (err) {
-      setError("Approval failed... " + err.message);
+  try {
+    // Animate the row before action
+    const row = document.querySelector(`tr[data-id="${sid}"]`);
+    if (row) {
+      gsap.to(row, {
+        backgroundColor: "rgba(209, 250, 229, 0.4)", // Light green highlight
+        duration: 0.3,
+        onComplete: async () => {
+          const response = await axios.post(`${config.url}/admin/approveseller/${sid}`);
+          alert(response.data);
+          fetchSellers();
+        }
+      });
+    } else {
+      const response = await axios.post(`${config.url}/admin/approveseller/${sid}`);
+      alert(response.data);
+      fetchSellers();
     }
-  };
+  } catch (err) {
+    setError("Approval failed... " + err.message);
+  }
+};
+
 
   const rejectSeller = async (sid) => {
     try {
