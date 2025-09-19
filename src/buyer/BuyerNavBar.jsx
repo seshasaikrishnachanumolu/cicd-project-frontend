@@ -299,8 +299,8 @@ export default function BuyerNavBar() {
                 </motion.button>
                 
                 <Link to="/" className="flex flex-col group">
-                  <div className="text-blue-600 font-bold text-2xl relative">
-                    LL-CART
+                  <div className="text-green-600 font-bold text-2xl relative">
+                    GROCERY-CART
                     <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300"></span>
                   </div>
                   <span className="text-xs text-gray-500 tracking-wider">YOUR NEEDS, OUR PROMISE</span>

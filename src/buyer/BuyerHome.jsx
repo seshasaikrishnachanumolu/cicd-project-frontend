@@ -205,7 +205,7 @@ export default function BuyerHome() {
                     </div>
                   </div>
                 )}
-                <div className="absolute top-2 right-2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-full animate-content-fade-in">
+                <div className="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full animate-content-fade-in">
                   ₹{product.cost}
                 </div>
               </div>
@@ -219,7 +219,7 @@ export default function BuyerHome() {
                 <div className="mt-4 space-y-2">
                   <button 
                     onClick={(e) => handleBuyNow(product, e)}
-                    className="w-full bg-blue-600 text-white py-2 rounded font-medium hover:bg-blue-700 transition-colors"
+                    className="w-full bg-green-600 text-white py-2 rounded font-medium hover:bg-blue-700 transition-colors"
                   >
                     Buy Now
                   </button>
@@ -228,7 +228,7 @@ export default function BuyerHome() {
                       e.stopPropagation();
                       handleAddToCart(product);
                     }}
-                    className="w-full bg-white text-blue-600 py-2 rounded font-medium border border-blue-600 hover:bg-blue-50 transition-colors flex items-center justify-center"
+                    className="w-full bg-white text-green-600 py-2 rounded font-medium border border-blue-600 hover:bg-blue-50 transition-colors flex items-center justify-center"
                   >
                     <FaShoppingCart className="mr-2" />
                     Add to Cart

@@ -11,7 +11,7 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-medium mb-4 pb-2 border-b border-gray-700 inline-block">About Us</h4>
             <ul className="space-y-2">
-              <li>Premium E-commerce Platform</li>
+              <li>Premium Online Grocery-Store Platform</li>
               <li>Quality Products Guaranteed</li>
               <li>Fast & Reliable Shipping</li>
               <li>Customer Satisfaction Focus</li>
@@ -24,11 +24,11 @@ export default function Footer() {
             <ul className="space-y-2">
               <li className="flex items-center">
                 <FaEnvelope className="mr-2 text-blue-400" />
-                kothakottsailaxmanrao@gmail.com
+                grocerystore@gmail.com
               </li>
               <li className="flex items-center">
                 <FaPhone className="mr-2 text-blue-400" />
-               +91 9392318005
+               +91 1234567890
               </li>
             </ul>
           </div>
@@ -64,7 +64,7 @@ export default function Footer() {
       
       {/* Copyright Section */}
       <div className="bg-gray-950 py-4 text-center text-sm">
-        © 2025 LL Cart. All rights reserved.
+        © 2025 Grocery Cart. All rights reserved.
       </div>
     </footer>
   );

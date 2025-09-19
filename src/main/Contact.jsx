@@ -30,15 +30,15 @@ export default function Contact() {
         <ul className="space-y-4">
           <li className="flex items-center justify-center md:justify-start">
             <FaEnvelope className="mr-3 text-blue-600" />
-            <span className="text-gray-700">kothakotasailaxmanrao@gmail.com</span>
+            <span className="text-gray-700">grocerystore@gmail.com</span>
           </li>
           <li className="flex items-center justify-center md:justify-start">
             <FaPhone className="mr-3 text-blue-600" />
-            <span className="text-gray-700">+91 9392318005</span>
+            <span className="text-gray-700">+91 1234567890</span>
           </li>
           <li className="flex items-start justify-center md:justify-start">
             <FaMapMarkerAlt className="mr-3 text-blue-600" />
-            <span className="text-gray-700">Kancharapalem Kaparada Ramzestate, Visakhapatnam, Andhra Pradesh</span>
+            <span className="text-gray-700">vaddeswaram klu, Vijayawada, Andhra Pradesh</span>
           </li>
         </ul>
       </div>
