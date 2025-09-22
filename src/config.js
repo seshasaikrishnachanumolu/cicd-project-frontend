@@ -1,7 +1,4 @@
-const config = 
-{
-    "url":"http://localhost:2004"
-    //"https://sdpbackend-famf.onrender.com"
-}
-
-export default config
+const config = {
+    url: "http://localhost:8086"
+};
+export default config;
